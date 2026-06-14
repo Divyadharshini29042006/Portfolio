@@ -2994,6 +2994,147 @@
       transition: opacity 0.5s ease;
       transform: translate3d(-1000px, -1000px, 0);
     }
+
+    /* ===== THANK YOU MODAL ===== */
+    .thank-you-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .thank-you-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .thank-you-modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 10, 19, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .thank-you-modal-container {
+      position: relative;
+      width: 90%;
+      max-width: 500px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(20, 184, 166, 0.15);
+      overflow: hidden;
+      z-index: 3001;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: #fff;
+    }
+
+    .thank-you-modal.open .thank-you-modal-container {
+      transform: scale(1) translateY(0);
+    }
+
+    .thank-you-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 3002;
+    }
+
+    .thank-you-modal-close:hover {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      transform: rotate(90deg);
+    }
+
+    .thank-you-modal-content {
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .thank-you-icon-wrap {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(45, 212, 191, 0.1);
+      border: 2px solid rgba(45, 212, 191, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .thank-you-icon-glow {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.2) 0%, transparent 70%);
+      animation: pulse 2s infinite;
+    }
+
+    .thank-you-check-icon {
+      position: relative;
+      z-index: 1;
+      color: var(--accent);
+      filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.5));
+    }
+
+    .thank-you-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .thank-you-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--gray-400);
+    }
+
+    .thank-you-signature {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--blue-light);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .thank-you-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 24px;
+      border: none;
+    }
   </style>
 </head>
 
@@ -4172,6 +4313,27 @@
     </div>
   </div>
 
+  <!-- Thank You Feedback Modal -->
+  <div id="thank-you-modal" class="thank-you-modal" aria-hidden="true">
+    <div class="thank-you-modal-overlay"></div>
+    <div class="thank-you-modal-container">
+      <button class="thank-you-modal-close" aria-label="Close modal" onclick="closeThankYouModal()">✕</button>
+      <div class="thank-you-modal-content">
+        <div class="thank-you-icon-wrap">
+          <div class="thank-you-icon-glow"></div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="thank-you-check-icon">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h3 class="thank-you-title">Message Received!</h3>
+        <p class="thank-you-text">Thank you for reaching out. Your message has bypassed the noise and landed directly in my queue. I appreciate you taking the time to connect, and I'll review and respond to you shortly.</p>
+        <div class="thank-you-signature">Let's build something extraordinary together.</div>
+        <button class="btn-primary thank-you-btn" onclick="closeThankYouModal()">Back to Portfolio</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===== NAVBAR =====
     const navbar = document.getElementById('navbar');
@@ -4423,19 +4585,85 @@
     // ===== FORM =====
     function handleFormSubmit() {
       const btn = document.querySelector('.btn-send');
-      const fname = document.getElementById('fname').value;
-      const email = document.getElementById('email').value;
-      if (!fname || !email) { alert('Please fill in at least your name and email.'); return; }
-      btn.classList.add('success');
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Message Sent!`;
-      btn.style.background = '#10B981';
-      btn.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
-      setTimeout(() => {
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      // Basic validation
+      if (!fname) {
+        alert('Please enter your first name.');
+        return;
+      }
+      if (!email) {
+        alert('Please enter your email address.');
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      if (!message) {
+        alert('Please enter your message.');
+        return;
+      }
+
+      // Disable button and show loading state
+      btn.disabled = true;
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<svg style="animation: spin 1s linear infinite; margin-right: 8px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="32" stroke-dashoffset="10" fill="none"></circle></svg> Sending...`;
+
+      const fullName = `${fname} ${lname}`.trim();
+
+      fetch("https://formsubmit.co/ajax/krishnan.divya.rv@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          Name: fullName,
+          Email: email,
+          Subject: subject || "No Subject",
+          Message: message,
+          _subject: `New Portfolio Message from ${fullName}: ${subject || 'No Subject'}`,
+          _captcha: "false"
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Clear all inputs
+        document.getElementById('fname').value = '';
+        document.getElementById('lname').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('subject').value = '';
+        document.getElementById('message').value = '';
+
+        // Reset button state immediately
         btn.classList.remove('success');
-        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Send Message`;
+        btn.innerHTML = originalHTML;
         btn.style.background = '';
         btn.style.boxShadow = '';
-      }, 3000);
+        btn.disabled = false;
+
+        // Open custom Thank You Modal
+        openThankYouModal();
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        alert('Failed to send message. Please try again or contact me directly at krishnan.divya.rv@gmail.com.');
+        btn.innerHTML = originalHTML;
+        btn.style.background = '';
+        btn.style.boxShadow = '';
+        btn.disabled = false;
+      });
     }
 
     // ===== CERTIFICATE TABS =====
@@ -4585,6 +4813,39 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && certModal.classList.contains('open')) {
         closeCertModal();
+      }
+    });
+
+    // ===== THANK YOU MODAL FUNCTIONS =====
+    const thankYouModal = document.getElementById('thank-you-modal');
+
+    function openThankYouModal() {
+      if (thankYouModal) {
+        thankYouModal.classList.add('open');
+        thankYouModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden'; // lock scroll
+      }
+    }
+
+    function closeThankYouModal() {
+      if (thankYouModal) {
+        thankYouModal.classList.remove('open');
+        thankYouModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // unlock scroll
+      }
+    }
+
+    const thankYouOverlay = document.querySelector('.thank-you-modal-overlay');
+    if (thankYouOverlay) {
+      thankYouOverlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeThankYouModal();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && thankYouModal && thankYouModal.classList.contains('open')) {
+        closeThankYouModal();
       }
     });
   </script>
